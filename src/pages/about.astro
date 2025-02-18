@@ -1,26 +1,25 @@
 ---
-
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// filepath: /C:/Users/shravan/Desktop/Personal website pt-2/shravandotlol/src/pages/about.astro
+import NewLayout from '../layouts/newLayout.astro';
 ---
-
-
-
-
-<Layout>
+<NewLayout>
     <head>
-        <title>Shravan Sathiyanarayanan</title> 
+        <title>About Me</title>
+        <link rel="stylesheet" href="about.css" />
     </head>
-	<main> 
-        <div>
-            <p class="meow"><h1> <p class="meow">hey, I am Shravan Sathiyanarayanan. A CSE undergrad doing my BTech in CSE at Amrita vishwavidyapetham </h1></p>
-            
-        </div> 
-            
-		 
-		
-		<link ref="stylesheet" href="about.css" />
+    <main> 
+        <header>
+            <h1 style= "text:align = left" >About Me</h1>
+        </header>
+            <h4 class="meow">
+                I am Shravan Sathiyanarayanan, currently pursuing my B.Tech in Computer Science and Engineering at Amrita University, Bangalore, India. I am fortunate to learn from experienced and supportive faculty, which has greatly contributed to my technical growth.<br><br>
 
-</Layout>
+                I have experience with multiple programming languages, including C, C++, Java, and Python, and I am proficient in web development using PHP. I am currently working on an application using Kotlin and Java while having developed numerous projects in the past, gaining valuable technical skills and hands-on experience.<br><br>
+                
+                My expertise extends to machine learning, particularly in training models for image processing and augmentation. In my third semester, I developed an ML model capable of diagnosing cancer types based on medical images. I have also implemented a hybrid image compression algorithm that integrates multiple techniques to optimize the storage of DICOM-formatted medical images.<br><br>
+                
+                Beyond development, I have experience in Web Security through my time with Team Bi0S, where I learned to build secure web applications by identifying and exploiting vulnerabilities, enabling me to follow best practices in web development.
+            </h4>
+      
+    </main>
+</NewLayout>

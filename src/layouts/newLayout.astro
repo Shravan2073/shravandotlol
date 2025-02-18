@@ -1,7 +1,6 @@
 ---
-// src/layouts/BaseLayout.astro
+// filepath: /C:/Users/shravan/Desktop/Personal website pt-2/shravandotlol/src/layouts/newlayout.astro
 import Navbar from '../components/Navbar.astro';
-
 ---
 
 <html lang="en">
@@ -16,13 +15,13 @@ import Navbar from '../components/Navbar.astro';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Doto:wght,ROND@100..900,0..100&family=Playwrite+AU+QLD+Guides&family=Playwrite+MX+Guides&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Doto:wght,ROND@100..900,0..100&family=Playwrite+AU+QLD+Guides&family=Playwrite+MX+Guides&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
-  
 </head>
 <body>
   <nav>
+        <a href="/">Home</a>
         <a href="/about">About me</a>
         <a href="/projects">Projects</a>
         <a href="/blog">Blog</a>
@@ -38,15 +37,30 @@ import Navbar from '../components/Navbar.astro';
         <a href="https://amrita.town/random">⟳ random</a>
         <a href="https://amrita.town/next">next →</a>
     </div>
-</footer>
+  </footer>
 </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+    html,
+    body {
+        margin: ;
+        width: 100%;
+        height: 100%;
+    }
+  
+    /* Broader content area for pages such as about.astro */
+    main {
+        margin: 0 auto;
+        max-width: 900px;
+        padding: 2rem;
+    }
+  
+    /* Heading styling for pages using this layout */
+    h4 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #e93322;
+    }
 </style>
