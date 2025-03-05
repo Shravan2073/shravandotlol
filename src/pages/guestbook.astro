@@ -1,23 +1,17 @@
----
-
+---  
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
----
+import GameOfLife from '../components/GameOfLife.jsx';
+---  
 
 <Layout>
-    <head>
-        <title>Guestbook</title>
-    </head>
-	<main> 
-        <div class="guestbook">
-          
-        
-        
-        </div> 
-            
-		 meow 
-		
-		
+  <head>
+    <title>Guestbook</title>
+  </head>
+  <main>
+    <div class="guestbook">
+      <!-- You can add additional guestbook content here -->
+      <h2>Leave a message or check out our cellular automata game!</h2>
+      <GameOfLife client:load />
+    </div>
+  </main>
 </Layout>
