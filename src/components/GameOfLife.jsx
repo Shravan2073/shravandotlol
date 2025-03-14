@@ -7,30 +7,24 @@ const GameOfLife = () => {
   const [generation, setGeneration] = useState(0);
   const [speed, setSpeed] = useState(100);
   const runningRef = useRef(isRunning);
-  const generationRef = useRef(generation);
+  const intervalRef = useRef(null);
 
-  // Create more dynamic initial grid
+  // Create initial grid with patterns
   const createInitialGrid = useCallback(() => {
-    const rows = Array(gridSize.height).fill().map(() => 
+    const rows = Array.from({ length: gridSize.height }, () =>
       Array(gridSize.width).fill(false)
     );
 
-    // Multiple interesting patterns
+    // Patterns (Glider, Random Noise, etc.)
     const patterns = [
-      // Gosper's Glider Gun
       [[1, 25], [2, 25], [1, 26], [2, 26]],
-      
-      // Additional interesting patterns
       [[10, 10], [11, 11], [12, 11], [12, 10], [12, 9]],
-      
-      // Random noise
       ...Array(100).fill().map(() => [
-        Math.floor(Math.random() * gridSize.width), 
+        Math.floor(Math.random() * gridSize.width),
         Math.floor(Math.random() * gridSize.height)
       ])
     ];
 
-    // Mark cells in patterns
     patterns.forEach(pattern => {
       pattern.forEach(([x, y]) => {
         if (x >= 0 && x < gridSize.width && y >= 0 && y < gridSize.height) {
@@ -42,14 +36,14 @@ const GameOfLife = () => {
     return rows;
   }, [gridSize]);
 
-  // Initialize grid
+  // Initialize grid on mount
   useEffect(() => {
     setGrid(createInitialGrid());
   }, [createInitialGrid]);
 
-  // More complex next generation computation
+  // Compute next generation
   const computeNextGeneration = useCallback((grid) => {
-    return grid.map((row, y) => 
+    return grid.map((row, y) =>
       row.map((cell, x) => {
         let liveNeighbors = 0;
         for (let dy = -1; dy <= 1; dy++) {
@@ -58,9 +52,9 @@ const GameOfLife = () => {
             const newY = y + dy;
             const newX = x + dx;
             if (
-              newY >= 0 && 
-              newY < gridSize.height && 
-              newX >= 0 && 
+              newY >= 0 &&
+              newY < gridSize.height &&
+              newX >= 0 &&
               newX < gridSize.width
             ) {
               liveNeighbors += grid[newY][newX] ? 1 : 0;
@@ -68,71 +62,48 @@ const GameOfLife = () => {
           }
         }
 
-        // More dynamic survival rules
+        // Standard Conway's Game of Life Rules
         if (cell) {
-          return (
-            liveNeighbors === 2 || 
-            liveNeighbors === 3 || 
-            (Math.random() < 0.05 && liveNeighbors > 1)
-          );
+          return liveNeighbors === 2 || liveNeighbors === 3;
         } else {
-          return (
-            liveNeighbors === 3 || 
-            (Math.random() < 0.01 && liveNeighbors > 1)
-          );
+          return liveNeighbors === 3;
         }
       })
     );
   }, [gridSize]);
 
-  // Simulation loop with more dynamics
-  const runSimulation = useCallback(() => {
-    if (!runningRef.current) return;
-
-    setGrid(prevGrid => {
-      const nextGrid = computeNextGeneration(prevGrid);
-      
-      // Update generation
-      setGeneration(prev => prev + 1);
-      generationRef.current += 1;
-
-      // Dynamically adjust speed based on grid activity
-      const aliveCells = nextGrid.flat().filter(cell => cell).length;
-      const newSpeed = Math.max(50, 200 - (aliveCells / (gridSize.width * gridSize.height) * 150));
-      setSpeed(newSpeed);
-
-      return nextGrid;
-    });
-
-    setTimeout(runSimulation, speed);
-  }, [computeNextGeneration, speed, gridSize]);
-
-  // Toggle simulation
+  // Start/Stop Simulation
   const toggleSimulation = () => {
     const nextRunningState = !isRunning;
     setIsRunning(nextRunningState);
     runningRef.current = nextRunningState;
-    
+
     if (nextRunningState) {
-      runSimulation();
+      intervalRef.current = setInterval(() => {
+        setGrid(prevGrid => {
+          const nextGrid = computeNextGeneration(prevGrid);
+          setGeneration(prev => prev + 1);
+          return nextGrid;
+        });
+      }, speed);
+    } else {
+      clearInterval(intervalRef.current);
     }
   };
 
-  // Reset with random variation
+  // Reset Simulation
   const resetSimulation = () => {
     setIsRunning(false);
-    runningRef.current = false;
+    clearInterval(intervalRef.current);
     setGeneration(0);
     setGrid(createInitialGrid());
   };
 
-  // Mutation function to add randomness
+  // Mutate grid randomly
   const mutateGrid = () => {
-    setGrid(prevGrid => 
-      prevGrid.map(row => 
-        row.map(cell => 
-          Math.random() < 0.1 ? !cell : cell
-        )
+    setGrid(prevGrid =>
+      prevGrid.map(row =>
+        row.map(cell => (Math.random() < 0.1 ? !cell : cell))
       )
     );
   };
@@ -145,20 +116,20 @@ const GameOfLife = () => {
           Generation: {generation}
         </span>
       </h1>
-      <div 
+      <div
         className="grid gap-0 border border-gray-300 shadow-lg"
         style={{
           gridTemplateColumns: `repeat(${gridSize.width}, 10px)`,
           gridTemplateRows: `repeat(${gridSize.height}, 10px)`
         }}
       >
-        {grid.map((row, y) => 
+        {grid.map((row, y) =>
           row.map((cell, x) => (
-            <div 
+            <div
               key={`${x}-${y}`}
               className={`w-[10px] h-[10px] transition-colors duration-200 ${
-                cell 
-                  ? 'bg-blue-500 hover:bg-blue-700' 
+                cell
+                  ? 'bg-blue-500 hover:bg-blue-700'
                   : 'bg-white hover:bg-gray-200'
               } border border-gray-200`}
             />
@@ -166,19 +137,19 @@ const GameOfLife = () => {
         )}
       </div>
       <div className="mt-4 flex space-x-4">
-        <button 
+        <button
           onClick={toggleSimulation}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
         >
           {isRunning ? 'Pause' : 'Start'}
         </button>
-        <button 
+        <button
           onClick={resetSimulation}
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
         >
           Reset
         </button>
-        <button 
+        <button
           onClick={mutateGrid}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
         >
@@ -186,8 +157,7 @@ const GameOfLife = () => {
         </button>
       </div>
       <div className="mt-2 text-sm text-gray-600">
-        Speed: {Math.round(200 - speed)} | 
-        Active Cells: {grid.flat().filter(cell => cell).length}
+        Speed: {speed} ms | Active Cells: {grid.flat().filter(cell => cell).length}
       </div>
     </div>
   );
