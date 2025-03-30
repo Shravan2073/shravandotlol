@@ -1,0 +1,66 @@
+---
+// filepath: /C:/Users/shravan/Desktop/Personal website pt-2/shravandotlol/src/layouts/newlayout.astro
+import Navbar from '../components/Navbar.astro';
+---
+
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-lZN37fD6LvZL1zW6bW1of6wBiBfZC9R5SYz38TRvDBCq7Ofd0C1Snzk2Kp5n798PB1Ad8dQQM+q3Vi+2QeXw2w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Doto:wght,ROND@100..900,0..100&family=Playwrite+AU+QLD+Guides&family=Playwrite+MX+Guides&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <nav>
+        <a href="/">Home</a>
+        <a href="/about">About me</a>
+        <a href="/projects">Projects</a>
+        <a href="/blog">Blog</a>
+        <a href="/guestbook">Guestbook</a>
+  </nav>
+  <main>
+    <slot />  
+  </main>
+  <footer>
+    <a href="https://amrita.town">amrita.town</a>
+    <div>
+        <a href="https://amrita.town/prev">← prev</a>
+        <a href="https://amrita.town/random">⟳ random</a>
+        <a href="https://amrita.town/next">next →</a>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+    html,
+    body {
+        margin: ;
+        width: 100%;
+        height: 100%;
+    }
+  
+    /* Broader content area for pages such as about.astro */
+    main {
+        margin: 0 auto;
+        max-width: 900px;
+        padding: 2rem;
+    }
+  
+    /* Heading styling for pages using this layout */
+    h4 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #e93322;
+    }
+</style>
