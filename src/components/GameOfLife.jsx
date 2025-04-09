@@ -2,44 +2,16 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 const GameOfLife = () => {
   const [gridSize] = useState({ width: 60, height: 40 });
-  const [grid, setGrid] = useState([]);
+  const [grid, setGrid] = useState(() => createInitialGrid(gridSize));
   const [isRunning, setIsRunning] = useState(false);
   const [generation, setGeneration] = useState(0);
   const [speed, setSpeed] = useState(100);
-  const runningRef = useRef(isRunning);
   const intervalRef = useRef(null);
 
   // Create initial grid with patterns
-  const createInitialGrid = useCallback(() => {
-    const rows = Array.from({ length: gridSize.height }, () =>
-      Array(gridSize.width).fill(false)
-    );
-
-    // Patterns (Glider, Random Noise, etc.)
-    const patterns = [
-      [[1, 25], [2, 25], [1, 26], [2, 26]],
-      [[10, 10], [11, 11], [12, 11], [12, 10], [12, 9]],
-      ...Array(100).fill().map(() => [
-        Math.floor(Math.random() * gridSize.width),
-        Math.floor(Math.random() * gridSize.height)
-      ])
-    ];
-
-    patterns.forEach(pattern => {
-      pattern.forEach(([x, y]) => {
-        if (x >= 0 && x < gridSize.width && y >= 0 && y < gridSize.height) {
-          rows[y][x] = true;
-        }
-      });
-    });
-
-    return rows;
+  const createGridWithPatterns = useCallback(() => {
+    return createInitialGrid(gridSize);
   }, [gridSize]);
-
-  // Initialize grid on mount
-  useEffect(() => {
-    setGrid(createInitialGrid());
-  }, [createInitialGrid]);
 
   // Compute next generation
   const computeNextGeneration = useCallback((grid) => {
@@ -62,7 +34,7 @@ const GameOfLife = () => {
           }
         }
 
-        // Standard Conway's Game of Life Rules
+        // Conway's Game of Life Rules
         if (cell) {
           return liveNeighbors === 2 || liveNeighbors === 3;
         } else {
@@ -72,13 +44,9 @@ const GameOfLife = () => {
     );
   }, [gridSize]);
 
-  // Start/Stop Simulation
-  const toggleSimulation = () => {
-    const nextRunningState = !isRunning;
-    setIsRunning(nextRunningState);
-    runningRef.current = nextRunningState;
-
-    if (nextRunningState) {
+  // Handle start/stop simulation with effect
+  useEffect(() => {
+    if (isRunning) {
       intervalRef.current = setInterval(() => {
         setGrid(prevGrid => {
           const nextGrid = computeNextGeneration(prevGrid);
@@ -89,17 +57,24 @@ const GameOfLife = () => {
     } else {
       clearInterval(intervalRef.current);
     }
+
+    return () => clearInterval(intervalRef.current);
+  }, [isRunning, speed, computeNextGeneration]);
+
+  // Toggle simulation running
+  const toggleSimulation = () => {
+    setIsRunning(prev => !prev);
   };
 
-  // Reset Simulation
+  // Reset simulation
   const resetSimulation = () => {
     setIsRunning(false);
     clearInterval(intervalRef.current);
     setGeneration(0);
-    setGrid(createInitialGrid());
+    setGrid(createGridWithPatterns());
   };
 
-  // Mutate grid randomly
+  // Randomly mutate grid
   const mutateGrid = () => {
     setGrid(prevGrid =>
       prevGrid.map(row =>
@@ -162,5 +137,31 @@ const GameOfLife = () => {
     </div>
   );
 };
+
+// Helper function to generate initial grid
+function createInitialGrid(gridSize) {
+  const rows = Array.from({ length: gridSize.height }, () =>
+    Array(gridSize.width).fill(false)
+  );
+
+  const patterns = [
+    [[1, 25], [2, 25], [1, 26], [2, 26]], // Block
+    [[10, 10], [11, 11], [12, 11], [12, 10], [12, 9]], // Glider
+    ...Array.from({ length: 100 }, () => [
+      Math.floor(Math.random() * gridSize.width),
+      Math.floor(Math.random() * gridSize.height),
+    ]), // Random noise
+  ];
+
+  patterns.forEach(pattern => {
+    pattern.forEach(([x, y]) => {
+      if (x >= 0 && x < gridSize.width && y >= 0 && y < gridSize.height) {
+        rows[y][x] = true;
+      }
+    });
+  });
+
+  return rows;
+}
 
 export default GameOfLife;
