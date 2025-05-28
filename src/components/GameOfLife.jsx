@@ -144,21 +144,37 @@ function createInitialGrid(gridSize) {
     Array(gridSize.width).fill(false)
   );
 
+  // Define initial patterns
   const patterns = [
-    [[1, 25], [2, 25], [1, 26], [2, 26]], // Block
-    [[10, 10], [11, 11], [12, 11], [12, 10], [12, 9]], // Glider
-    ...Array.from({ length: 100 }, () => [
-      Math.floor(Math.random() * gridSize.width),
-      Math.floor(Math.random() * gridSize.height),
-    ]), // Random noise
+    // Block pattern
+    [[1, 25], [2, 25], [1, 26], [2, 26]],
+    // Glider pattern
+    [[10, 10], [11, 11], [12, 11], [12, 10], [12, 9]]
   ];
 
+  // Add random cells
+  for (let i = 0; i < 100; i++) {
+    const x = Math.floor(Math.random() * gridSize.width);
+    const y = Math.floor(Math.random() * gridSize.height);
+    patterns.push([x, y]);
+  }
+
+  // Apply all patterns to the grid
   patterns.forEach(pattern => {
-    pattern.forEach(([x, y]) => {
+    if (Array.isArray(pattern[0])) {
+      // Handle multi-cell patterns
+      pattern.forEach(([x, y]) => {
+        if (x >= 0 && x < gridSize.width && y >= 0 && y < gridSize.height) {
+          rows[y][x] = true;
+        }
+      });
+    } else {
+      // Handle single-cell patterns
+      const [x, y] = pattern;
       if (x >= 0 && x < gridSize.width && y >= 0 && y < gridSize.height) {
         rows[y][x] = true;
       }
-    });
+    }
   });
 
   return rows;
